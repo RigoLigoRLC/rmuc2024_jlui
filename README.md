@@ -1,4 +1,7 @@
 # JLUI
+
+[让我们说中文](README_CN.md)
+
 Client side UI library for RoboMaster University Series Embedded Devs, by Team TARS_Go from Jilin University.
 
 This library has seen extensive use in RoboMaster University Championship 2024 in our team and also some other teams from nearby universities. But the quality of this library will still be ABSOLUTELY NO WARRANTY as described in the [license](LICENSE).
@@ -32,6 +35,12 @@ void JLUI_SetSenderReceiverId(uint16_t senderId, uint16_t receiverId);
 
 Set your own Robot ID and Player Client ID right here. This also clears internal buffer.
 
+Set a mutex object with this API call. If you intend to not use mutex just set it to an arbitrary non-zero pointer.
+
+```c
+void JLUI_SetMutexObject(void *mutex);
+```
+
 ### Periodic sending
 
 As of the time of writing (Serial Port Protocol Appendix V1.6.3, sadly has no English version, lol), the transmission frequency of inter-robot communication packets have been increased to 30Hz. The API is still named `JLUI_10HzTick` because it was 10Hz for a really long time. All in all, call this function at your desired frequency and JLUI will take care of the rest.
@@ -64,6 +73,8 @@ Comment out this macro to make all the asserts no-ops. Asserts are very useful w
 
 First, call `JLUI_SetSenderReceiverId` to initialize. Do not call any other APIs before this call!
 
+Then setup your mutex.
+
 Then spin up a task that calls `JLUI_10HzTick` periodically.
 
 You can now create and delete UI objects with `JLUI_Create*` and `JLUI_Delete` functions. Creation functions will return an object handle in `Uiid` type, and you can modify the object properties with the handles.
@@ -84,7 +95,7 @@ If a dirty string object exists, it complicates the situation. Since string obje
 
 # Optimization
 
-- Do not modify string objects frequently. Use other objects to mask them out.
+- Do not modify string objects frequently. Use other objects to mask them out. This is a **VERY VERY VERY** effective trick!
 - Try reducing total object count that must change between ticks down to 7 or less.
 
 # Unfinished Functionalities
